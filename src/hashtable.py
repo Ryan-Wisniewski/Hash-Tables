@@ -14,7 +14,6 @@ class HashTable:
     '''
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
-        self.count = 0
         self.storage = [None] * capacity
 
 
@@ -52,33 +51,20 @@ class HashTable:
 
         Fill this in.
         '''
-        if self.count == self.capacity:
-            print('attempting to resize')
-            self.resize()
-            print('resize success. Capacity now: ', self.capacity)
-        #loop through hashtable
-        for i in range(self.capacity):
-            if self.storage[i] is None:
-                #set key to new instance of LinkedPair
-                new_key = LinkedPair(key, value)
-                print('1Check',new_key)
-                #hash the key
-                new_hash = self._hash(new_key)
-                print('2Check',new_hash)
-                check = self._hash_mod(key)
-                print('grabfromhashcheck', self.storage[check])
-                #save the key
-                self.storage[i] = new_hash
-                print('lastAllCheck',new_hash, self.storage)
-            else:
-                #handle the hashes beging the same here!!
-                print('handle the reapeat hash', self.storage)
-        self.count += 1
-        # print(self.count,'CHECKHERHEHEEHRE')
-         
-        # new_hash = self._hash(LinkedPair(key, value))
-        # print(new_hash)
-
+        new_index = self._hash_mod(key)
+        #start at front and work back
+        head = self.storage[new_index]
+        if head is None:
+            head = LinkedPair(key, value)
+            print('noneHead adding', head)        
+        else:
+            current_index = head
+            print('CeeINDEX',current_index)
+            while current_index.next is not None:
+                current_index = current_index.next
+            current_index.next = LinkedPair(key, value)
+        self.storage[new_index] = head
+        # print('@@@@', LinkedPair)
     def remove(self, key):
         '''
         Remove the value stored with the given key.
@@ -98,8 +84,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-        # retrieve_hash = self._hash_mod(key)
+        for i in range(0, self.capacity):
+            head = self.storage[i]
+            if head is None:
+                pass
+            elif head.key == key:
+                value = head.value
+            else:
+                while head.next is not None:
+                    head = head.next
+                    if key == head.key:
+                        value = head.value
+        return value
+
+        # retrieve_hash = self._hash_mod(key) THIS RETURNS INDEX OF THE ARRAY
         # print(retrieve_hash)
 
 
@@ -110,15 +108,13 @@ class HashTable:
 
         Fill this in.
         '''
-        self.capacity *= 2
-        # print(self.capacity)
-        new_storage = [None] * self.capacity
-        # print(new_storage,self.storage,'@@@@@@@@@@')
-        for i in range(self.count):
-            print(i)
-            new_storage[i] = self.storage[i]
-        self.storage = new_storage
-        print(self.storage)
+        new_capacity = HashTable(self.capacity * 2)
+        print(new_capacity,self.storage,'@@@@@@@@@@')
+        for i in range(self.capacity):
+            # print(i)
+            new_capacity.storage[i] = self.storage[i]
+        self.storage = new_capacity
+        # print(self.storage)
 
 
 
@@ -137,11 +133,11 @@ if __name__ == "__main__":
     print(ht.retrieve("line_3"))
 
     # Test resizing
-    # old_capacity = len(ht.storage)
-    # ht.resize()
-    # new_capacity = len(ht.storage)
+    old_capacity = len(ht.storage)
+    ht.resize()
+    new_capacity = len(ht.storage)
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
     print(ht.retrieve("line_1"))
