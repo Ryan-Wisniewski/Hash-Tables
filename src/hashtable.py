@@ -56,10 +56,10 @@ class HashTable:
         head = self.storage[new_index]
         if head is None:
             head = LinkedPair(key, value)
-            print('noneHead adding', head)        
+            # print('noneHeadAdding', head)        
         else:
             current_index = head
-            print('CeeINDEX',current_index)
+            # print('ExsistsHeadAdding',current_index)
             while current_index.next is not None:
                 current_index = current_index.next
             current_index.next = LinkedPair(key, value)
@@ -73,9 +73,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
-
+        
+        for i in range(0, self.capacity):
+            head = self.storage[i]
+            print(head, key)
+            
+            
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
@@ -87,14 +90,17 @@ class HashTable:
         for i in range(0, self.capacity):
             head = self.storage[i]
             if head is None:
+                print('this is not the Droid youre l00king for')
                 pass
             elif head.key == key:
                 value = head.value
+                print('$$$HeadIn first value of loop',value)
             else:
                 while head.next is not None:
                     head = head.next
                     if key == head.key:
                         value = head.value
+                        print('$$$HeadSetAfterLoop',value)
         return value
 
         # retrieve_hash = self._hash_mod(key) THIS RETURNS INDEX OF THE ARRAY
@@ -108,12 +114,14 @@ class HashTable:
 
         Fill this in.
         '''
-        new_capacity = HashTable(self.capacity * 2)
-        print(new_capacity,self.storage,'@@@@@@@@@@')
-        for i in range(self.capacity):
+        new_hashTable = HashTable(self.capacity * 2)
+        # print(new_hashTable,self.storage,'@@@@@@@@@@')
+        for i in range(0, self.capacity):
             # print(i)
-            new_capacity.storage[i] = self.storage[i]
-        self.storage = new_capacity
+            new_hashTable.storage[i] = self.storage[i]
+        self.storage = new_hashTable.storage
+        self.capacity = new_hashTable.capacity
+        # print(len(ht.storage))
         # print(self.storage)
 
 
@@ -124,6 +132,8 @@ if __name__ == "__main__":
     ht.insert("line_1", "Tiny hash table")
     ht.insert("line_2", "Filled beyond capacity")
     ht.insert("line_3", "Linked list saves the day!")
+    ht.insert("line_4", "Screeee")
+    ht.insert("line_5", "SCreeee take2!")
 
     print("")
 
@@ -131,11 +141,14 @@ if __name__ == "__main__":
     print(ht.retrieve("line_1"))
     print(ht.retrieve("line_2"))
     print(ht.retrieve("line_3"))
-
+    print(ht.retrieve("line_4"))
+    print(ht.retrieve("line_5"))
+    
     # Test resizing
     old_capacity = len(ht.storage)
     ht.resize()
     new_capacity = len(ht.storage)
+    
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
@@ -143,5 +156,10 @@ if __name__ == "__main__":
     print(ht.retrieve("line_1"))
     print(ht.retrieve("line_2"))
     print(ht.retrieve("line_3"))
+    print(ht.retrieve("line_4"))
+    print(ht.retrieve("line_5"), '\n')
 
+    print(f"\nRemoving: ", ht.remove("line-4"))
+    print("Removed?", ht.retrieve("line_4"))
     print("")
+    print(ht.__dict__, 'all of itt')
